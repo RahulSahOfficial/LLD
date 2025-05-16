@@ -38,12 +38,38 @@ class CartPrintInvoice{
         cout<<"Thankyou Visit Again!!!"<<endl;
     }
 };
-class CartDBStorage{
-    const ShoppingCart *sc;
+//abstract class
+// made const so the db persistance cannot change the cart items only read
+class DBPersistence{
     public:
-    CartDBStorage(ShoppingCart *sc):sc(sc){}
-    void saveToDB() const {
-        cout<<"\n\nSaved in DB.."<<endl;
+    const ShoppingCart *sc;
+    virtual void save() const =0;
+};
+class SaveToSQLDB:public DBPersistence{
+    public:
+    SaveToSQLDB(ShoppingCart *sc){
+        this->sc=sc;
+    }
+    void save() const override{
+        cout<<"Saved to SQL DB"<<endl;
+    }
+};
+class SaveToMongoDB:public DBPersistence{
+    public:
+    SaveToMongoDB(ShoppingCart *sc){
+        this->sc=sc;
+    }
+    void save() const override{
+        cout<<"Saved to MongoDB"<<endl;
+    }
+};
+class SaveToFile:public DBPersistence{
+    public:
+    SaveToFile(ShoppingCart *sc){
+        this->sc=sc;
+    }
+    void save() const override{
+        cout<<"Saved to File"<<endl;
     }
 };
 int main(){
@@ -57,10 +83,17 @@ int main(){
     sc->display();
     CartPrintInvoice *printer=new CartPrintInvoice(sc);
     printer->printInvoice();
-    CartDBStorage *db=new CartDBStorage(sc);
-    db->saveToDB();
+
+    DBPersistence *sqlDB=new SaveToSQLDB(sc);
+    DBPersistence *mongoDB=new SaveToMongoDB(sc);
+    DBPersistence *file=new SaveToFile(sc);
+    sqlDB->save();
+    mongoDB->save();
+    file->save();
     
-    delete db;
+    delete sqlDB;
+    delete mongoDB;
+    delete file;
     delete printer;
     delete sc;
     delete watch;
