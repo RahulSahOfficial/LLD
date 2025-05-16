@@ -1,0 +1,16 @@
+Cart Items : 
+Rolex : $33000
+Iphone : $399
+Dell Inspiron : $1299
+Total : $34698
+
+
+Printing Invoice : 
+Rolex : $33000
+Iphone : $399
+Dell Inspiron : $1299
+Total : $34698
+Thankyou Visit Again!!!
+
+
+Saved in DB..
