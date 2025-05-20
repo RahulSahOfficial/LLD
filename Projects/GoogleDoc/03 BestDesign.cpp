@@ -71,11 +71,12 @@ class DocumentEditor{
 };
 class Persistence{
     public:
-    virtual void save(DocumentRenderer *renderer)=0;
+    virtual void save(Document *doc)=0;
 };
 class SaveToFile:public Persistence{
     public:
-    void save(DocumentRenderer *renderer) override{
+    void save(Document *doc) override{
+        DocumentRenderer *renderer=new DocumentRenderer(doc);
         ofstream fout;
         fout.open("doc.txt");
         fout<<renderer->renderDocument();
@@ -97,6 +98,6 @@ int main(){
     editor->addText("LC");
     editor->addNewLine();
     cout<<renderer->renderDocument();
-    storage->save(renderer);
+    storage->save(doc);
     return 0;
 }
