@@ -9,7 +9,7 @@
 | 4 | UML Diagrams (Class & Sequence Diagram) | ✅
 | 5 | SOLID Principles (SRP & OCP & LSP)| ✅
 | 6 | SOLID Principles (LSP Guideline & ISP and DIP) | ✅
-| 7 | Google Doc (Project) | WIP
+| 7 | Google Doc (Project) | ✅
 ---
 
 ## Records
@@ -84,5 +84,14 @@
 - **Dependency Inversion Principle**  
     - HL Module should not depend on LL Module.
     - Made `UserService`,`Persistence`,`SQLDB` and `MongoDB` where Persistence acts as abstraction between business logic and external detailed operations.
+
+### Day 7 : Google Doc (Project)
+-  **Bad Design**
+    - Made **single class** DocumentEditor and done everything in the same class
+- **Better Design**
+    - Made **8 class** `DocumentElement`, `TextElement`, `ImageElement`, `NewLineElement`, `Persistence`, `SaveToFile`, `Document`, `DocumentEditor` and distributed the individual tasks.
+- **Best Design**
+    - Seperated render functionality and distributed tasks of editor,renderer and persistence so that client directly access it.
+    - Made **9 class**  `DocumentElement`, `TextElement`, `ImageElement`, `NewLineElement`, `Persistence`, `SaveToFile`, `Document`, `DocumentEditor`, `DocumentRenderer`.
 ---
 
