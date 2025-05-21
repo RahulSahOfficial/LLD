@@ -10,6 +10,7 @@
 | 5 | SOLID Principles (SRP & OCP & LSP)| ✅
 | 6 | SOLID Principles (LSP Guideline & ISP and DIP) | ✅
 | 7 | Google Doc (Project) | ✅
+| 8 | Strategy Design Pattern | ✅
 ---
 
 ## Records
@@ -93,5 +94,10 @@
 - **Best Design**
     - Seperated render functionality and distributed tasks of editor,renderer and persistence so that client directly access it.
     - Made **9 class**  `DocumentElement`, `TextElement`, `ImageElement`, `NewLineElement`, `Persistence`, `SaveToFile`, `Document`, `DocumentEditor`, `DocumentRenderer`.
+### Day 8 : Strategy Design Pattern
+- Defines a family of algorithm, put them into seperate classes so that they can be changed at run time.
+- Prefer **Composition** over **Inheritance**.
+- Made a Client class `Robot` and 3 different strategies `Walkable`, `Talkable`, `Flyable` and 7 different concrete strategies `NormalWalk`, `NoWalk`, `NormalTalk`, N`oTalk`, `NormalFly`, `JetFly`, `NoFly` and created objects of strategies as per our requirements and passed while creating object of Robot.
+Made two derived classes of Robot called `CompanionRobot` and `SparrowRobot` which have own implementation of `projection` method.
 ---
 
