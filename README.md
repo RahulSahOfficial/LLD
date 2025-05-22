@@ -11,6 +11,7 @@
 | 6 | SOLID Principles (LSP Guideline & ISP and DIP) | ✅
 | 7 | Google Doc (Project) | ✅
 | 8 | Strategy Design Pattern | ✅
+| 9 | Factory Design Pattern | ✅
 ---
 
 ## Records
@@ -99,5 +100,16 @@
 - Prefer **Composition** over **Inheritance**.
 - Made a Client class `Robot` and 3 different strategies `Walkable`, `Talkable`, `Flyable` and 7 different concrete strategies `NormalWalk`, `NoWalk`, `NormalTalk`, N`oTalk`, `NormalFly`, `JetFly`, `NoFly` and created objects of strategies as per our requirements and passed while creating object of Robot.
 Made two derived classes of Robot called `CompanionRobot` and `SparrowRobot` which have own implementation of `projection` method.
+### Day 9 : Factory Design Pattern
+- Creation pattern used to create objects without exposing the creation logic to client
+- Types :
+    1. **Simple Factory**  
+    Created `Burger` abstract class and 3 concreate class `BasicBurger`, `StandardBurger` and `PremiumBurger` and made `BurgerFactory` class which have `createBurger` method which return object based on `type` passed as argument
+    1.  **Factory Method**
+    Here we have **multiple factories**.  
+    Made the `BurgerFactory` abstract class and derived two class `SinghBurger` and `KingBurger` and these two factory have different burgers `BasicBurger`, `StandardBurger`, `PremiumBurger`, `BasicWheatBurger` and `StandardWheatBurger`.
+    1. **Abstract Factory Method**
+    Here we have **multiple related products**.  
+    Made 2 abstract class `Burger` and `GarlicBread` and 10 concrete class for products 5-5 both. And we are creating objects in concrete class of Factory abstract class according to requirements.
 ---
 
