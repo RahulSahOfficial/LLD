@@ -12,6 +12,7 @@
 | 7 | Google Doc (Project) | ✅
 | 8 | Strategy Design Pattern | ✅
 | 9 | Factory Design Pattern | ✅
+| 10 | Singleton Design Pattern | ✅
 ---
 
 ## Records
@@ -111,5 +112,13 @@ Made two derived classes of Robot called `CompanionRobot` and `SparrowRobot` whi
     1. **Abstract Factory Method**
     Here we have **multiple related products**.  
     Made 2 abstract class `Burger` and `GarlicBread` and 10 concrete class for products 5-5 both. And we are creating objects in concrete class of Factory abstract class according to requirements.
+### Day 10 : Singleton Design Pattern
+- Singleton ensures that a class has only one instance and provides global point of access to it.
+- Only one object is ever created.
+- Constructor is private, instance accessed using a static method.
+- Codes
+    1. Made `Singleton` class and `getInstance` method to get object.
+    1. Used `mutex` lock for thread safety (Double locking)
+    1. Eager initialization to initialize the object immediately when class is loaded.
 ---
 
