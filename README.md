@@ -13,6 +13,8 @@
 | 8 | Strategy Design Pattern | ✅
 | 9 | Factory Design Pattern | ✅
 | 10 | Singleton Design Pattern | ✅
+| 11 | Zomato Delivery App (Project) | Pending...
+| 12 | Observer Design Pattern | ✅
 ---
 
 ## Records
@@ -120,5 +122,16 @@ Made two derived classes of Robot called `CompanionRobot` and `SparrowRobot` whi
     1. Made `Singleton` class and `getInstance` method to get object.
     1. Used `mutex` lock for thread safety (Double locking)
     1. Eager initialization to initialize the object immediately when class is loaded.
+
+### Day 11 : Zomato Delivery App (Project)
+`Backlog`
+
+
+
+### Day 12 : Observer Design Pattern
+- When state changes notifies & updates all dependents automatically
+- Made 2 abstract class `IChannel` and `ISubscriber` and 2 concrete class `Channel` and` Subsriber`. `Channel` have 5 methods `addSubscriber`, `removeSubscriber`, `notify`, `uploadVideo`, `getLatestVideo` and `Subscriber` class have method `update`.
+- This was breaking **Single Responsibility Principle** as the Channel and both reponsibilities which are business logic and handling subscriber. Hence moved subcriber handling functionality in the base class.
+Now Channel have only methods `uploadVideo` and `getLatestVideo`(Much Cleaner).
 ---
 
