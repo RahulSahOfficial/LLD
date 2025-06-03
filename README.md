@@ -17,7 +17,7 @@
 | 12 | Observer Design Pattern | ✅
 | 13 | Decorator Design Pattern | ✅
 | 14 | Notification System (Project) | Pending...
-| 15 | Command Design Pattern | Pending...
+| 15 | Command Design Pattern | ✅
 | 16 | Apdapter Design Pattern | ✅
 ---
 
@@ -149,7 +149,9 @@ Now Channel have only methods `uploadVideo` and `getLatestVideo`(Much Cleaner).
 `Backlog`
 
 ### Day 15 : Command Design Pattern
-`Backlog`
+- **Encapsulate request as object**
+- Made an abstract class `ICommand` and made 2 concrete commands `LightCommand` and `FanCommand` class. Made two appliance class `Light` and `Fan` and a `RemoteControl` class which have methods `setCommand` and `pressButton`.
+- Additionally removed `isOn` vector from remote and each appliance have data member isOn and based on status its execute or undo.
 
 ### Day 16 : Adapter Design Pattern
 - **Converts the interface of a class into another interface that client expects.**

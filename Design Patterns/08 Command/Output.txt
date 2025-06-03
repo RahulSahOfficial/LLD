@@ -1,0 +1,6 @@
+Bedroom 1 Light Turned On!
+Hall Light Turned On!
+Hall Light Turned Off!
+Bedroom 1 Fan Turned On!
+Hall Fan Turned On!
+Bedroom 1 Light Turned Off!
