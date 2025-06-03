@@ -15,6 +15,7 @@
 | 10 | Singleton Design Pattern | ✅
 | 11 | Zomato Delivery App (Project) | Pending...
 | 12 | Observer Design Pattern | ✅
+| 13 | Decorator Design Pattern | ✅
 ---
 
 ## Records
@@ -133,5 +134,12 @@ Made two derived classes of Robot called `CompanionRobot` and `SparrowRobot` whi
 - Made 2 abstract class `IChannel` and `ISubscriber` and 2 concrete class `Channel` and` Subsriber`. `Channel` have 5 methods `addSubscriber`, `removeSubscriber`, `notify`, `uploadVideo`, `getLatestVideo` and `Subscriber` class have method `update`.
 - This was breaking **Single Responsibility Principle** as the Channel and both reponsibilities which are business logic and handling subscriber. Hence moved subcriber handling functionality in the base class.
 Now Channel have only methods `uploadVideo` and `getLatestVideo`(Much Cleaner).
+
+### Day 13 : Decorator Design Pattern
+- Attach additional responsibilities to object dynamically.
+- Prefer Composition over Inheritance (Multiple classes with combination of functionalities).
+- Made `ICharacter` abstract class and made `Mario` child class. Then made `IDecorator` and made 3 decorator class `HeightUpDec`, `GunPowerDec` and `StarPowerDec` to add additional functionalities.
+- Made  `Coffee` abstract class and made 2 child class `Espresso` and `Latte`. Then made decorator abstract class `CustomizationDecorator` and made 2 decorators `SugarDecorator` and `CreamDecorator` to add description and cost.
+- Added Bold Italics feature in GoogleDoc project made `TextFormattingDecorator` abstract class and made 2 decorators `Bold` and `Italics` then in `DocumentEditor` added extra method `addElement` allowing flexible combination of elements like Bold(Text)
 ---
 

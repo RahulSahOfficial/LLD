@@ -31,7 +31,6 @@ class Channel:public IChannel{
     Channel(string name){
         this->name=name;
     }
-    
     void addVideo(string title){
         cout<<"\nNew video uploaded : "<<title<<endl;
         videos.push_back(title);
