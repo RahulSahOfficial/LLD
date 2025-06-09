@@ -7,10 +7,20 @@ using namespace std;
 class Rider:public User{
     public:
     Location* defaultPickupLocation;
-    // Contructor if not passing default pickup location
-    Rider(string name,string phoneNumber,Location *currentLocation): User(name, phoneNumber, currentLocation), defaultPickupLocation(currentLocation) {}
     Rider(string name,string phoneNumber,Location *currentLocation,Location *defaultPickupLocation):User(name,phoneNumber,currentLocation){
         this->defaultPickupLocation=defaultPickupLocation;
+    }
+    void setDefaultPickupLocation(Location *newLocation){
+        defaultPickupLocation=newLocation;
+    }
+    void print(){
+        cout<<"Rider :"<<endl;
+        cout<<"Name : "<<name<<endl;
+        cout<<"Phone Number : "<<phoneNumber<<endl;
+        cout<<"Current Location : "<<endl;
+        currentLocation->print();
+        cout<<"Default Pickup Location : "<<endl;
+        defaultPickupLocation->print();
     }
 };
 #endif

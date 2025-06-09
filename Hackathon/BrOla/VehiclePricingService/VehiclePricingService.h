@@ -7,9 +7,9 @@ class VehiclePricingService{
     static VehiclePricingService* instance;
     VehiclePricingService(){
         vehicleTypeToPrice["Bike"]=5;
-        vehicleTypeToPrice["Sedan"]=6;
-        vehicleTypeToPrice["SUV"]=6;
-        vehicleTypeToPrice["AutoRikshaw"]=6;
+        vehicleTypeToPrice["Sedan"]=12;
+        vehicleTypeToPrice["SUV"]=19;
+        vehicleTypeToPrice["AutoRikshaw"]=10;
     };
 public:
     static VehiclePricingService* getInstance(){
