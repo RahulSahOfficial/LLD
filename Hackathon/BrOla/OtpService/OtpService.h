@@ -6,7 +6,6 @@ class OtpService{
     OtpService(){}
     public:
     static string generateOtp(int length){
-        // srand(time(0));
         string otp;
         for(int i=0;i<length;i++){
             otp+='0'+rand()%10;

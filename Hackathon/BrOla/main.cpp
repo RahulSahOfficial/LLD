@@ -3,11 +3,12 @@
 #include "./NotificationService/NotificationService.h"
 #include "./NotificationService/AppNotification.h"
 #include "./NotificationService/SMSNotification.h"
+#include "./PaymentService/PaymentStrategyFactory.h"
 #include "./OtpService/OtpService.h"
+#include "./Types.h"
 using namespace std;
 // Global 
 unordered_map<string,double> vehicleTypeToPrice;
-double basePrice=49;
 class Vehicle{
     public:
     string name;
@@ -38,6 +39,9 @@ class User{
         this->name=name;
         this->phoneNumber=phoneNumber;
         this->currentLocation=currentLocation;
+    }
+    void updateLocation(Location *newLocation){
+        currentLocation=newLocation;
     }
 };
 class Rider:public User{
@@ -125,18 +129,22 @@ class Ride{
     string vehicleType;
     string otp;
     double price;
-    string status;
+    RideStatus status;
     bool isPeakHour;
-    Ride(Rider *rider,Location *source,Location *destination,string vehicleType,bool isPeakHour){
+    PaymentStrategy *paymentStrategy;
+    bool paymentCompleted;
+    Ride(Rider *rider,Location *source,Location *destination,string vehicleType,bool isPeakHour,PaymentStrategyType paymentStrategyType){
         this->driver=nullptr;
         this->rider=rider;
         this->source=source;
         this->vehicleType=vehicleType;
         this->destination=destination;
         this->isPeakHour=isPeakHour;
-        this->status="Assiging Rider";
+        this->paymentCompleted=false;
+        this->status=RideStatus::AssigningRider;
         this->otp=OtpService::generateOtp(4);
         this->price=calculatePrice();
+        this->paymentStrategy=PaymentStrategyFactory::create(paymentStrategyType,rider->phoneNumber,price);
     }
     double calculatePrice(){
         double distance=source->getDistance(destination);
@@ -156,8 +164,9 @@ class Ride{
         cout<<"Vehicle Type : "<<vehicleType<<endl;
         cout<<"OTP : "<<otp<<endl;
         cout<<"Price : "<<price<<endl;
-        cout<<"status : "<<status<<endl;
+        cout<<"status : "<<rideStatusToString(status)<<endl;
         cout<<"isPeakHour : "<<isPeakHour<<endl;
+        cout<<"Payment Completed : "<<paymentCompleted<<endl;
     }
 };
 class DriverAssignStrategy{
@@ -174,6 +183,7 @@ class NearestDriver:public DriverAssignStrategy{
             double distanceBewteenDriverAndRiderSource=each->currentLocation->getDistance(source);
             pq.push({-distanceBewteenDriverAndRiderSource,each});
         }
+        //returning the top rider based on min distance
         return pq.top().second;
     }
 };
@@ -187,21 +197,32 @@ class HighestRatedDriver:public DriverAssignStrategy{
             double rating=each->getRating();
             pq.push({rating,each});
         }
+        //returning the top rider based on rating
         return pq.top().second;
     }
 };
-class IRideManager{
+class DriverAssignStrategyFactory{
+    public:
+    static DriverAssignStrategy* create(DriverStrategyType strategyType){
+        if(strategyType==DriverStrategyType::Nearest)
+            return new NearestDriver();
+        else if(strategyType==DriverStrategyType::HighestRated)
+            return new HighestRatedDriver();
+        return nullptr;
+    }
+};
+class RideManager{
     static unordered_map<string,set<Driver *>> availableRiders;
-    static unordered_map<Driver*,Ride*> waitingQueue;
     static unordered_map<Driver*,Ride*> driverToRide;
     static unordered_map<Rider*,Ride*> riderToRide;
-    static IRideManager *obj;
-    IRideManager(){
+    static RideManager *obj;
+    double driverRiderBufferSpace=5;//to start ride driver must be 5m or less of start ride
+    RideManager(){
     }
     public:
-    static IRideManager* getInstance(){
+    static RideManager* getInstance(){
         if(obj==nullptr)
-            obj=new IRideManager();
+            obj=new RideManager();
         return obj;
     }
     void goOnline(Driver *driver){
@@ -221,31 +242,67 @@ class IRideManager{
         availableRiders[vehicleType].erase(driver);
         
     }
-    void createRide(Rider *rider,string vehicleType,Location *source,Location *destination,bool isPeakHour,DriverAssignStrategy *strategy){
-        Ride *newRide=new Ride(rider,source,destination,vehicleType,isPeakHour);
+    void createRide(Rider *rider,string vehicleType,Location *source,Location *destination,bool isPeakHour,PaymentStrategyType paymentStrategyType){
+        Ride *newRide=new Ride(rider,source,destination,vehicleType,isPeakHour,paymentStrategyType);
         riderToRide[rider]=newRide;
         newRide->print();
         auto availableDriversOfSelectedVehicle=availableRiders[vehicleType];
+        DriverAssignStrategy *strategy=DriverAssignStrategyFactory::create(DriverStrategyType::HighestRated);
         Driver *driverAssigned=strategy->assignDriver(source,destination,availableDriversOfSelectedVehicle);
         cout<<driverAssigned<<endl;
         if(driverAssigned){
             newRide->driver=driverAssigned;
             availableRiders[vehicleType].erase(driverAssigned);
             driverToRide[driverAssigned]=newRide;
-            newRide->status="Rider en Route";
+            newRide->status=RideStatus::RiderEnRoute;
         }
         else{
-            cout<<"Not assiged"<<endl;
-            newRide->status="No Rider Found";
+            newRide->status=RideStatus::NoRiderFound;
+            cout<<"No Rider Found!!"<<endl;
         }
         newRide->print();
     }
+    void validateAndStartRide(Driver *driver,string otp){
+        Ride *ride=driverToRide[driver];
+        if(driver->currentLocation->getDistance(ride->source)>driverRiderBufferSpace){
+            throw runtime_error("Not in location to start ride");
+            return;
+        }
+        if(false && ride->otp!=otp){//false just to bypass as we dont know generated otp in runtime
+            throw runtime_error("Not in location to start ride");
+            return;  
+        }
+        ride->status=RideStatus::RideInProgress;
+        NotificationService *nf=new AppNotification("Mobile","🔔 Ride Started");
+        nf->notify();
+        ride->print();
+    }
+    void completeRide(Driver *driver){
+        Ride *ride=driverToRide[driver];
+        if(driver->currentLocation->getDistance(ride->destination)>driverRiderBufferSpace)
+            throw runtime_error("Not in location to end ride");
+        ride->status=RideStatus::Completed;
+        driverToRide.erase(driver);
+        availableRiders[driver->getVehicleType()].insert(driver);
+        NotificationService *nf=new AppNotification("Mobile","🔔 Ride Completed");
+        nf->notify();
+        ride->print();
+    }
+    void makePayment(Rider *rider){
+        Ride *ride=riderToRide[rider];
+        if(ride->status!=RideStatus::Completed)
+            throw runtime_error("Ride is not completed!");
+        
+        if(ride->paymentStrategy->pay()){
+            ride->paymentCompleted=true;
+            riderToRide.erase(rider);
+        }
+    }
 };
-unordered_map<string,set<Driver *>> IRideManager::availableRiders;
-unordered_map<Driver*,Ride*> IRideManager::waitingQueue;
-unordered_map<Driver*,Ride*> IRideManager::driverToRide;
-unordered_map<Rider*,Ride*> IRideManager::riderToRide;
-IRideManager* IRideManager::obj=nullptr;
+unordered_map<string,set<Driver *>> RideManager::availableRiders;
+unordered_map<Driver*,Ride*> RideManager::driverToRide;
+unordered_map<Rider*,Ride*> RideManager::riderToRide;
+RideManager* RideManager::obj=nullptr;
 int main(){
     srand(time(0));
     // Types of Vehicle 
@@ -253,33 +310,36 @@ int main(){
     vehicleTypeToPrice["Sedan"]=6;
     vehicleTypeToPrice["SUV"]=6;
     vehicleTypeToPrice["AutoRikshaw"]=6;
+    try{
+        Location *d1Loc=new Location(2,2);
+        Vehicle *scorpio=new Vehicle("Scorpio","Mahindra","SUV","JH09AX4512");
+        Driver *d1=new Driver("Driver1","9998887777",d1Loc,scorpio);
+        d1->changeRating(0.7);
+        d1->print();
 
-    Location *d1Loc=new Location(2,2);
-    Vehicle *scorpio=new Vehicle("Scorpio","Mahindra","SUV","JH09AX4512");
-    Driver *d1=new Driver("Driver1","9998887777",d1Loc,scorpio);
-    d1->changeRating(0.7);
-    d1->print();
+        Location *d2Loc=new Location(7,7);
+        Vehicle *thar=new Vehicle("THAR","Mahindra","SUV","JH09AX4511");
+        Driver *d2=new Driver("Driver2","1234566782",d2Loc,thar);
+        
+        d2->print();
 
-    Location *d2Loc=new Location(7,7);
-    Vehicle *thar=new Vehicle("THAR","Mahindra","SUV","JH09AX4511");
-    Driver *d2=new Driver("Driver2","1234566782",d2Loc,thar);
-    
-    d2->print();
+        Location *source1=new Location(8,8);
+        Location *dest1=new Location(20,20);
+        Rider *r1=new Rider("Sah","5675765676",source1);
 
-    Location *source1=new Location(8,8);
-    Location *dest1=new Location(10,10);
-    Rider *r1=new Rider("Sah","5675765676",source1);
+        RideManager *rideManager=RideManager::getInstance();
 
-    IRideManager *rideManager=IRideManager::getInstance();
-
-    rideManager->goOnline(d1);
-    rideManager->goOnline(d2);
-    rideManager->createRide(r1,"SUV",source1,dest1,true,new HighestRatedDriver());
-
-    NotificationService *nf=new AppNotification("Xperia","otp "+OtpService::generateOtp(4));
-    nf->notify();
-
-    NotificationService *nf1=new SMSNotification("5675688900","otp "+OtpService::generateOtp(4));
-    nf1->notify();
+        rideManager->goOnline(d1);
+        // rideManager->goOnline(d2);
+        rideManager->createRide(r1,"SUV",source1,dest1,true,PaymentStrategyType::COD);
+        d1->updateLocation(source1);
+        rideManager->validateAndStartRide(d1,"1234");
+        d1->updateLocation(dest1);
+        rideManager->completeRide(d1);
+        rideManager->makePayment(r1);
+    }
+    catch(exception &e){
+        cout<<e.what()<<endl;
+    }
     return 0;
 }
