@@ -4,7 +4,7 @@
 #include "./PaymentStrategy.h"
 #include "./UPIPaymentStrategy.h"
 #include "./CODPaymentStrategy.h"
-#include "../Types.h"
+#include "../Types/Types.h"
 using namespace std;
 class PaymentStrategyFactory {
 public:

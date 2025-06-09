@@ -12,8 +12,7 @@ class SMSNotification:public NotificationService{
         this->msg=msg;
     }
     void notify() override{
-        cout<<"SMS sent to "<<phoneNumber<<endl;
-        cout<<msg<<endl;
+        cout<<"SMS sent to "<<phoneNumber<<" : "<<msg<<endl;
     }
 };
 #endif

@@ -12,8 +12,7 @@ class AppNotification:public NotificationService{
         this->msg=msg;
     }
     void notify() override{
-        cout<<"Notification sent to "<<mobile<<endl;
-        cout<<msg<<endl;
+        cout<<"Notification sent to "<<mobile<<" : "<<msg<<endl;
     }
 };
 #endif

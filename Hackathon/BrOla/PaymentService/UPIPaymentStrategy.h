@@ -1,7 +1,7 @@
 #ifndef UPI_PAYMENT_STRATEGY
 #define UPI_PAYMENT_STRATEGY
 #include<bits/stdc++.h>
-#include "../Types.h"
+#include "../Types/Types.h"
 #include "./PaymentStrategy.h"
 #include "../NotificationService/SMSNotification.h"
 using namespace std;
