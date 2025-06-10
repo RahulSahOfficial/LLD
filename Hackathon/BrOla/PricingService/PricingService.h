@@ -19,6 +19,7 @@ class BaseFareCalculator:public FareCalculator{
         return price;
     }
 };
+// Decorator 
 class PriceDecorator:public FareCalculator{
     public:
     FareCalculator *fc;
@@ -26,6 +27,7 @@ class PriceDecorator:public FareCalculator{
         this->fc=fc;
     }
 };
+// Surge Price Decorator
 class SurgeDecorator:public PriceDecorator{
     double surgeMultiplier;
     public:

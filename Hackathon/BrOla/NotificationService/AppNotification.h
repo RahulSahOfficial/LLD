@@ -1,9 +1,9 @@
 #ifndef APP_NOTIFICATION_H
 #define APP_NOTIFICATION_H
-#include "NotificationService.h"
+#include "./INotification.h"
 #include<bits/stdc++.h>
 using namespace std;
-class AppNotification:public NotificationService{
+class AppNotification:public INotification{
     string mobile;
     string msg;
     public:
@@ -12,7 +12,7 @@ class AppNotification:public NotificationService{
         this->msg=msg;
     }
     void notify() override{
-        cout<<"Notification sent to "<<mobile<<" : "<<msg<<endl;
+        cout<<"Notification sent to 📱 : "<<msg<<endl;
     }
 };
 #endif

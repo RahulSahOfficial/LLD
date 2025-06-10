@@ -6,7 +6,7 @@
 #include "./Driver.h"
 #include "./Rider.h"
 #include "../PricingService/PricingService.h"
-#include "../PaymentService/PaymentStrategyFactory.h"
+#include "../PaymentService/PaymentServiceFactory.h"
 #include "../OtpService/OtpService.h"
 using namespace std;
 class Ride{
@@ -20,7 +20,7 @@ class Ride{
     double price;
     RideStatus status;
     bool isPeakHour;
-    PaymentStrategy *paymentStrategy;
+    PaymentService *paymentStrategy;
     bool paymentCompleted;
     Ride(Rider *rider,Location *source,Location *destination,string vehicleType,bool isPeakHour,PaymentStrategyType paymentStrategyType){
         this->driver=nullptr;
@@ -33,12 +33,12 @@ class Ride{
         this->status=RideStatus::AssigningRider;
         this->otp=OtpService::generateOtp(4);
         this->price=calculatePrice();
-        this->paymentStrategy=PaymentStrategyFactory::create(paymentStrategyType,rider->phoneNumber,price);
+        this->paymentStrategy=PaymentServiceFactory::create(paymentStrategyType,rider->phoneNumber,price);
     }
     double calculatePrice(){
         double distance=source->getDistance(destination);
         FareCalculator *calc=new BaseFareCalculator();
-        if(isPeakHour)
+        if(isPeakHour)//if peakhour decorate with surge price
             calc=new SurgeDecorator(calc);
         return calc->calculatePrice(distance,vehicleType);
     }

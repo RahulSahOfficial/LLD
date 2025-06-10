@@ -1,13 +1,12 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 #include<bits/stdc++.h>
-#include "../Utils/Location.h"
 #include "./User.h"
 #include "./Vehicle.h"
 using namespace std;
 class Driver:public User{
     public:
-    Vehicle *vehicle;
+    Vehicle *vehicle;// Composition
     double rating;
     bool isOnline;
     bool isAvailable;

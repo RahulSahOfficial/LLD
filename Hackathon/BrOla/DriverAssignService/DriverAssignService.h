@@ -4,6 +4,10 @@
 #include "../Types/Types.h"
 #include "../Models/Driver.h"
 #include "../Utils/Location.h"
+/*
+Assumption : First Rider base on filter automatically accpepts the ride
+as here in loop we cannot accept and reject the ride in runtime
+*/
 class DriverAssignService{
     public:
     virtual Driver* assignDriver(Location*,Location*,set<Driver*>)=0;
@@ -16,6 +20,7 @@ class NearestDriver:public DriverAssignService{
         priority_queue<pair<double,Driver*>> pq;
         for(auto each:availableDrivers){
             double distanceBewteenDriverAndRiderSource=each->currentLocation->getDistance(source);
+            // cout<<each->name<<" "<<distanceBewteenDriverAndRiderSource<<endl;
             pq.push({-distanceBewteenDriverAndRiderSource,each});
         }
         //returning the top rider based on min distance

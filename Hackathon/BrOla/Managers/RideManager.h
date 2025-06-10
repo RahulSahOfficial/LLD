@@ -5,13 +5,15 @@
 #include "../Models/Rider.h"
 #include "../Models/Ride.h"
 #include "./DriverManager.h"
+#include "../Types/Types.h"
 #include "../NotificationService/NotificationService.h"
-#include "../NotificationService/AppNotification.h"
-#include "../NotificationService/SMSNotification.h"
 #include "../DriverAssignService/DriverAssignService.h"
 using namespace std;
+// Singleton Class 
 class RideManager{
+    // Map so we can know which driver is mapped to which ride
     unordered_map<Driver*,Ride*> driverToRide;
+    // Map so we can know which rider is mapped to which ride
     unordered_map<Rider*,Ride*> riderToRide;
     static RideManager *instance;
     double driverRiderBufferSpace=5;//to start ride driver must be 5m or less of start ride
@@ -23,26 +25,25 @@ class RideManager{
             instance=new RideManager();
         return instance;
     }
-    void createRide(Rider *rider,string vehicleType,Location *source,Location *destination,bool isPeakHour,PaymentStrategyType paymentStrategyType){
+    void createRide(Rider *rider,string vehicleType,Location *source,Location *destination,bool isPeakHour,DriverStrategyType driverStrategyType,PaymentStrategyType paymentStrategyType){
         Ride *newRide=new Ride(rider,source,destination,vehicleType,isPeakHour,paymentStrategyType);
         riderToRide[rider]=newRide;
-        newRide->print();
-        auto availableDriversOfSelectedVehicle=DriverManager::getInstance()->getAvilableRiders(vehicleType);
-        DriverAssignService *driverAssignService=DriverAssignStrategyFactory::create(DriverStrategyType::HighestRated);
+        NotificationService::sendRideBooked(rider,NotificationType::APP);
+        auto availableDriversOfSelectedVehicle=DriverManager::getInstance()->getAvilableDrivers(vehicleType);
+        DriverAssignService *driverAssignService=DriverAssignStrategyFactory::create(driverStrategyType);
         Driver *driverAssigned=driverAssignService->assignDriver(source,destination,availableDriversOfSelectedVehicle);
-        cout<<driverAssigned<<endl;
         if(driverAssigned){
+            cout<<"Driver Assigned : "<<driverAssigned->name<<endl;
             newRide->driver=driverAssigned;
             DriverManager::getInstance()->makeUnavilable(driverAssigned);
             driverToRide[driverAssigned]=newRide;
             newRide->status=RideStatus::RiderEnRoute;
-            NotificationService *nf=new AppNotification("Mobile","🔔 Rider Assigned");
-            nf->notify();
+            NotificationService::sendRideAssigned(rider,NotificationType::APP);
+            NotificationService::sendRideOTP(rider,newRide->otp,NotificationType::APP);
         }
         else{
             newRide->status=RideStatus::NoRiderFound;
-            NotificationService *nf=new AppNotification("Mobile","🔔 No Riders Found!");
-            nf->notify();
+            NotificationService::sendNoRidesFound(rider,NotificationType::APP);
         }
     }
     void validateAndStartRide(Driver *driver,string otp){
@@ -52,12 +53,11 @@ class RideManager{
             return;
         }
         if(false && ride->otp!=otp){//false just to bypass as we dont know generated otp in runtime
-            throw runtime_error("Not in location to start ride");
+            throw runtime_error("OTP Incorrect!!");
             return;  
         }
         ride->status=RideStatus::RideInProgress;
-        NotificationService *nf=new AppNotification("Mobile","🔔 Ride Started");
-        nf->notify();
+        NotificationService::sendRideStarted(ride->rider,NotificationType::APP);
     }
     void completeRide(Driver *driver){
         Ride *ride=driverToRide[driver];
@@ -66,8 +66,7 @@ class RideManager{
         ride->status=RideStatus::Completed;
         driverToRide.erase(driver);
         DriverManager::getInstance()->makeAvilable(driver);
-        NotificationService *nf=new AppNotification("Mobile","🔔 Ride Completed");
-        nf->notify();
+        NotificationService::sendRideCompleted(ride->rider,NotificationType::APP);
     }
     void makePayment(Rider *rider){
         Ride *ride=riderToRide[rider];
@@ -76,8 +75,7 @@ class RideManager{
         if(ride->paymentStrategy->pay()){
             ride->paymentCompleted=true;
             riderToRide.erase(rider);
-            NotificationService *nf=new AppNotification("Mobile","🔔 Payment Done");
-            nf->notify();
+            NotificationService::sendPaymentDone(rider,NotificationType::APP);
         }
     }
     void printRide(Ride *ride){

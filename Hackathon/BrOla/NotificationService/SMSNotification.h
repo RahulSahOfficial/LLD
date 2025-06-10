@@ -1,9 +1,9 @@
 #ifndef SMS_NOTIFICATION_H
 #define SMS_NOTIFICATION_H
-#include "NotificationService.h"
+#include "./INotification.h"
 #include<bits/stdc++.h>
 using namespace std;
-class SMSNotification:public NotificationService{
+class SMSNotification:public INotification{
     string phoneNumber;
     string msg;
     public:

@@ -3,6 +3,7 @@
 #include<bits/stdc++.h>
 #include "../Utils/Location.h"
 using namespace std;
+// Parent class of both rider and driver
 class User{
     public:
     string name;
