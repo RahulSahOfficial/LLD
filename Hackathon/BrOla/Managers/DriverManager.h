@@ -3,9 +3,11 @@
 #include<bits/stdc++.h>
 #include "../Models/Driver.h"
 using namespace std;
+//Singleton Class
 class DriverManager{
-    static unordered_map<string,set<Driver *>> availableRiders;
-    static vector<Driver*> drivers;
+    //stores list of avilable rider map helps get only specifc type of vehicle
+    unordered_map<string,set<Driver *>> availableDrivers;
+    vector<Driver*> drivers;
     static DriverManager *instance;
     DriverManager(){
     }
@@ -41,14 +43,14 @@ class DriverManager{
         for(auto each:drivers)
             each->print();
     }
-    set<Driver*> getAvilableRiders(string vehicleType){
-        return availableRiders[vehicleType];
+    set<Driver*> getAvilableDrivers(string vehicleType){
+        return availableDrivers[vehicleType];
     }
     void goOnline(Driver *driver){
         driver->isOnline=true;
         driver->isAvailable=true;
         string vehicleType=driver->getVehicleType();
-        availableRiders[vehicleType].insert(driver);
+        availableDrivers[vehicleType].insert(driver);
     }
     void goOffline(Driver *driver){
         if(!driver->isAvailable){
@@ -58,19 +60,19 @@ class DriverManager{
         driver->isOnline=false;
         driver->isAvailable=false;
         string vehicleType=driver->getVehicleType();
-        availableRiders[vehicleType].erase(driver);
+        availableDrivers[vehicleType].erase(driver);
     }
+    // When ride is completed driver becomes avilable
     void makeAvilable(Driver *driver){
-        availableRiders[driver->getVehicleType()].insert(driver);
+        availableDrivers[driver->getVehicleType()].insert(driver);
     }
+    // When driver is in ride he is unavilable
     void makeUnavilable(Driver *driver){
-        availableRiders[driver->getVehicleType()].erase(driver);
+        availableDrivers[driver->getVehicleType()].erase(driver);
     }
     void updateLocation(Driver *driver,Location *newLocation){
         driver->updateLocation(newLocation);
     }
 };
-unordered_map<string,set<Driver *>> DriverManager::availableRiders;
 DriverManager* DriverManager::instance=nullptr;
-vector<Driver*> DriverManager::drivers;
 #endif

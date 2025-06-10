@@ -1,16 +1,15 @@
 #ifndef UPI_PAYMENT_STRATEGY
 #define UPI_PAYMENT_STRATEGY
 #include<bits/stdc++.h>
-#include "./PaymentStrategy.h"
-#include "../NotificationService/SMSNotification.h"
+#include "./PaymentService.h"
+#include "../NotificationService/NotificationService.h"
 using namespace std;
-class UPIPaymentStrategy:public PaymentStrategy{
+class UPIPaymentStrategy:public PaymentService{
     public:
-    UPIPaymentStrategy(string phoneNumber,double amount):PaymentStrategy(phoneNumber,amount){};
+    UPIPaymentStrategy(string phoneNumber,double amount):PaymentService(phoneNumber,amount){};
     bool pay() override{
-        cout<<"Amount "<<amount<<" Paid via UPI "<<phoneNumber<<endl;
-        NotificationService *notificationService=new SMSNotification(phoneNumber,"Amount "+to_string(amount)+"paid via UPI");
-        notificationService->notify();
+        //Proecessed Payment Here...
+        NotificationService::sendUPIPaymentStatus(phoneNumber,amount,NotificationType::SMS);
         return true;
     }
 };

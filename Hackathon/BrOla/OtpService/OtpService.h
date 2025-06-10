@@ -2,6 +2,7 @@
 #define OTP_SERVICE_H
 #include <bits/stdc++.h>
 using namespace std;
+// Abstract Class for generating otp  
 class OtpService{
     OtpService(){}
     public:

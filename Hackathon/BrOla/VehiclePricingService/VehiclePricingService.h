@@ -2,6 +2,7 @@
 #define VEHICLE_PRICING_SERVICE_H
 #include<bits/stdc++.h>
 using namespace std;
+// Abstract class Vehicle and its price per KM 
 class VehiclePricingService{
     unordered_map<string,double> vehicleTypeToPrice;
     static VehiclePricingService* instance;

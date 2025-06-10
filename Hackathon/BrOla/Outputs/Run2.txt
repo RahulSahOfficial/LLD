@@ -1,0 +1,46 @@
+Driver Driver1 created!
+Driver Driver2 created!
+Driver Driver3 created!
+Rider Sah created!
+All Drivers :
+Driver : 
+Name : Driver1
+Phone : 9998887777
+Rating : 4.5
+Location : (2,2)
+Vehicle : 
+Name : Safari
+Company : Tata
+Type : SUV
+Number : JH01AA1234
+
+Driver : 
+Name : Driver2
+Phone : 9988776655
+Rating : 4
+Location : (8,8)
+Vehicle : 
+Name : Scorpio
+Company : Mahindra
+Type : SUV
+Number : JH01BB1234
+
+Driver : 
+Name : Driver3
+Phone : 8877665544
+Rating : 3.5
+Location : (15,0)
+Vehicle : 
+Name : Creta
+Company : Hyundai
+Type : SUV
+Number : JH01CC1234
+
+Notification sent to 📱 : 🔔 Ride Booked!
+Notification sent to 📱 : 🔔 Ride OTP : 7066
+Driver Assigned : Driver1
+Notification sent to 📱 : 🔔 Rider Assigned!
+Notification sent to 📱 : 🔔 Ride Started!
+Notification sent to 📱 : 🔔 Ride Completed!
+SMS sent to 5675765676 : 🔔 Amount 207.264481 paid via UPI
+Notification sent to 📱 : 🔔 Payment Done!

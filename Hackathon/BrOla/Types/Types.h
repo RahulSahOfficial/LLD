@@ -2,8 +2,13 @@
 #define TYPES_H
 #include<bits/stdc++.h>
 using namespace std;
+// Types of Driver Assign Strategy  
 enum class DriverStrategyType { Nearest, HighestRated };
+// Types of Payment Strategy 
 enum class PaymentStrategyType { UPI, COD };
+// Types of Notification Strategy 
+enum class NotificationType {APP,SMS};
+// Type of Ride Status  
 enum class RideStatus {
     AssigningRider,
     RiderEnRoute,

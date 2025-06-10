@@ -1,0 +1,28 @@
+Driver Driver1 created!
+Driver Driver2 created!
+Rider Sah created!
+All Drivers :
+Driver : 
+Name : Driver1
+Phone : 9998887777
+Rating : 3
+Location : (2,2)
+Vehicle : 
+Name : Safari
+Company : Tata
+Type : SUV
+Number : JH01AA1234
+
+Driver : 
+Name : Driver2
+Phone : 9988776655
+Rating : 3
+Location : (8,8)
+Vehicle : 
+Name : Scorpio
+Company : Mahindra
+Type : SUV
+Number : JH01BB1234
+
+Notification sent to 📱 : 🔔 Ride Booked!
+Notification sent to 📱 : 🔔 No Riders Found!

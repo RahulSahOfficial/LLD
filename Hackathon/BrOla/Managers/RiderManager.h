@@ -4,8 +4,9 @@
 #include "../Utils/Location.h"
 #include "../Models/Rider.h"
 using namespace std;
+// Singleton Class 
 class RiderManager{
-    static vector<Rider*> riders;
+    vector<Rider*> riders;
     static RiderManager *instance;
     RiderManager(){
     }
@@ -28,9 +29,6 @@ class RiderManager{
         for(auto each:riders)
             each->print();
     }
-    void updateRiderLocation(Rider* rider, Location* newLocation){
-        rider->updateLocation(newLocation);
-    }
     void setDefaultPickupLocation(Rider* rider, Location* newLocation){
         rider->setDefaultPickupLocation(newLocation);
     }
@@ -39,5 +37,4 @@ class RiderManager{
     }
 };
 RiderManager* RiderManager::instance=nullptr;
-vector<Rider*> RiderManager::riders;
 #endif
